@@ -5,17 +5,13 @@
  //创建一个模块
  var todoApp = angular.module('TodoApp',[]);
  //定义一个主控制器
- todoApp.controller('mainController',['$scope',function($scope){
+ todoApp.controller('mainController',['$scope','$window',function($scope,$window){
  	//初始化数据
  	$scope.input = '';
  	//定义一个变量id记录状态，如果currentEditingId == todo.id,就认为是编辑状态，添加editing类名；
  	$scope.currentEditingId = 0;
 
- 	$scope.todos = [
-	 	{id :getId(), text :'HTML',completed:true,editing:false},
-	 	{id :getId()getId(), text :'CSS',completed:true,editing:false},
-	 	{id :getId(), text :'JS',completed:false,editing:false}
- 	];
+
  	//双击编辑
  	$scope.edit = function(id){
     	$scope.currentEditingId = id;
@@ -41,16 +37,23 @@
  	 	text:$scope.input,
  	 	completed: false
  	 });
+
  	 $scope.input = '';
+ 	 $scope.saveTostorage();
+ };
+ $scope.change = function(){
+    $scope.saveTostorage();
  };
  //编辑后回车键，离开编辑状态，currentEditingId=0；即可
  $scope.save = function(){
     $scope.currentEditingId = 0;
+    $scope.saveTostorage();
  };
  //删除任务
  $scope.remove = function(current){
  	 var index = $scope.todos.indexOf(current);
  	 $scope.todos.splice(index,1);
+ 	 $scope.saveTostorage();
  };
  //全选：全部完成；点击全选按钮，为全部完成状态
  //遍历todos项，使completed：false；
@@ -74,7 +77,12 @@ $scope.clearCompleted = function(){
 			unCompleted.push(todo);
 		}
 	});
-	$scope.todos = unCompleted;
+	console.log(unCompleted);
+	my_todos = unCompleted;
+	//console.log($scope.todos);
+	$scope.saveTostorage();
+	 $scope.todos =get();
+	return $scope.todos;
 };
 //点击all，active，completed，切换显示相应数据
  $scope.changeFilter = function(completed){
@@ -83,22 +91,29 @@ $scope.clearCompleted = function(){
 //可以用锚点变化来改变数据：
 //在angular中有$location变量，可以用来获取url中的锚点值
 //$location.url 得到的是#后面的值
-var url = $location.url();
+var url = $window.location.url;
 switch(url){
 	case '/active':
-	  $scope.filterData = {'completed':false}};
-		break;
+	  $scope.filterData = {'completed':false};
+	   break;
 		case '/completed':
-	  $scope.filterData = {'completed':false}};
+	  $scope.filterData = {'completed':false};
 		break;
 
 };
+// 保存数据
+// 保存在localStorage中，需要借助window对象，注入window对象
+var storage = $window.localStorage;
 
-
-
-
-
+var my_todos = JSON.parse(storage.getItem('my_todos') || '[]'); // x00001
+ console.log(my_todos);
+$scope.saveTostorage = function(){
+	storage.setItem('my_todos',JSON.stringify(my_todos));
+};
+function get(){
+    return my_todos;
+};
+//将添加的数据记录到localStorage之后，要将记录在localStorage中的的值返回给原来的todos，绑定在主页面
+ $scope.todos =get();
  }]);
-
-
 })(angular);
