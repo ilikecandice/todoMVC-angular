@@ -55,14 +55,14 @@
 						<a ng-class = "{selected:filterData.completed === undefined}" ng-click = 'changeFilter({})' href="#/">All</a>
 					</li>
 					<li>
-						<a href="#/active" ng-class = "{selected:filterData.completed === false}" ng-click = 'changeFilter({completed:false})'>Active</a>
+						<a href="#/active" ng-class = "{selected:filterData.completed === false}">Active</a>
 					</li>
 					<li>
-						<a href="#/completed" ng-class = "{selected:filterData.completed === true}" ng-click = 'changeFilter({completed:true})'>Completed</a>
+						<a href="#/completed" ng-class = "{selected:filterData.completed === true}" >Completed</a>
 					</li>
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button class="clear-completed" ng-show = "hasCompleted()" ng-click = "clearCompleted()">Clear completed</button>
+				<button class="clear-completed" ng-show = "hasCompleted()" >Clear completed</button>
 			</footer>
 		</section>
 		<footer class="info">

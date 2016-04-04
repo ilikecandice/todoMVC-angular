@@ -2,7 +2,7 @@
 * @Author: CC
 * @Date:   2016-04-04 15:08:08
 * @Last Modified by:   CC
-* @Last Modified time: 2016-04-04 17:57:54
+* @Last Modified time: 2016-04-04 18:26:34
 */
 
 (function(angular){
@@ -12,9 +12,9 @@
   //定义一个主控制器
 	todoApp.controller('mainController',
 		['$scope',//注入数据
-		'$window',
+		'$location',
 		'Storage',
-		function($scope,$window,Storage){
+		function($scope,$location,Storage){
 
  	//初始化数据
  	$scope.input = '';
@@ -74,22 +74,39 @@ $scope.clearCompleted = function(){
  $scope.todos = temp;
 };
 //点击all，active，completed，切换显示相应数据
- $scope.changeFilter = function(completed){
- 	$scope.filterData = completed;
- };
+ // $scope.changeFilter = function(completed){
+ // 	$scope.filterData = completed;
+ // };
 //可以用锚点变化来改变数据：
 //在angular中有$location变量，可以用来获取url中的锚点值
 //$location.url 得到的是#后面的值
-var url = $window.location.url;
-switch(url){
-	case '/active':
-	  $scope.filterData = {'completed':false};
-	   break;
-		case '/completed':
-	  $scope.filterData = {'completed':false};
-		break;
+// var url = $location.location.url;
+// switch(url){
+// 	case '/active':
+// 	  $scope.filterData = {'completed':false};
+// 	   break;
+// 		case '/completed':
+// 	  $scope.filterData = {'completed':false};
+// 		break;
 
-};
+// };
+ //$watch监视$scope上的成员
+$scope.filterData = {};
+$scope.location = $location
+$scope.$watch('location.url()',function(now,old){
+  switch(now){
+     case '/completed':
+            $scope.filterData = { completed: true };
+            break;
+          case '/active':
+            $scope.filterData = { completed: false };
+            break;
+          default:
+            // 重新点击了ALL
+            $scope.filterData = {};
+            break;
+  }
+});
 }
 ]);
 })(angular);
